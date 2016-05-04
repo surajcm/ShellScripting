@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>Shell scripting</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
 		<link rel="stylesheet" href="css/theme/black.css">
@@ -24,8 +24,354 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section>
+					<p style="font-size:80px"><strong>Basics of shell scripting</strong></p>
+				</section>
+				<section>
+				    <p style="font-size:70px">Agenda</p>
+				    <ul>
+					    <li> Variables</li>
+					    <li> Mathematical operations</li>
+					    <li> Conditions / Loops</li>
+					    <li> File Handling</li>
+					    <li> User input</li>
+					    <li> Text Manipulation</li>
+				    </ul> 
+				</section>
+				<section>
+					<p style="font-size:70px">Working with commands</p>
+					<p>Lets go through some random commands and its definitions</p>
+					<pre><code>
+man - shows up the manual of each command in linux
+which - display an executables location
+head - displays first 10 lines of a file (more # of lines can be displayed if needed)
+tail - displays last 10 lines of a file (more # of lines can be displayed if needed)
+sort - sort the lines of text
+uniq - report or omit repeated lines
+wc - print newline, word and byte counts for each file
+echo - print some messages
+file - prints the type of file 
+touch - creates a file
+					</code></pre>
+				</section>
+				<section>
+					<p style="font-size:70px">Files and permissions</p>
+					<p>We can see a file permission using ls -l , stat commands. Modification of permission can be done via chmod,chown,chgrp commands</p>
+					<img src="https://www.ics.uci.edu/computing/bin/img/perms1.png" alt="Linux permission" width="743" height="205">
+				</section>
+				<section>
+					<p style="font-size:70px">Environment variables</p>
+					<p>There are two types of variables in the bash shell :</p>
+					<p> Global Variables</p>
+					<pre><code>eg:- $HOME,$LOGNAME </code></pre>
+					<p> Local Variables</p>
+					<pre><code>eg:- $Abcd,$Test_1 </code></pre>
+				</section>
+				<section>
+				    <p style="font-size:70px">The BackTick</p>
+				    <p>The backtick allows you to assign the output of a shell command to a variable.</p>
+				    <pre>
+				    	<code>
+#!/bin/bash
+# using the backtick character
+testing=`date`
+echo "The date and time are: " $testing
+				    	</code>
+					</pre>
+				</section>
+				<section>
+					<p style="font-size:70px">Output redirection</p>
+					<p>The most basic type of redirection is sending output from a command to a file. The bash shell uses the greater-than symbol for this.</p>
+					<pre><code>command > outputfile </code></pre>
+					<p>Anything that would appear on the screen as an output of a command, is now getting stored in the outputfile specified</p>
+				    <pre>
+				    	<code>
+$date > test6
+$ ls -l test
+$ cat test6
+Tue Sep 24 17:56:58 EDT 2007
+				    	</code>
+					</pre>
+				</section>
+				<section>
+				    <p style="font-size:70px">Performing Math</p>
+				    <p>We use expr command to do math in bash</p>
+				    <pre>
+				    	<code>
+$ expr 1 + 5
+6
+
+$ expr 5 \* 2
+10
+				    	</code>
+				    </pre>
+				    <pre>
+				    	<code>
+#!/bin/bash
+# An example of using the expr command
+var1=10
+var2=20
+var3=`expr $var2 / $var1`
+echo The result is $var3
+				    	</code>
+				    </pre>
+				</section>
+				<section>
+				    <p style="font-size:70px">Using brackets</p>
+				    <p style="font-size:20px">In bash, when assigning a mathematical value to a variable, you can enclose the mathematical equation using a dollar sign and square brackets <mark>$[ operation ]</mark></p>
+				    <pre>
+				    	<code>
+$ var1=$[1 + 5]
+$ echo $var1
+6
+$ var2 = $[$var1 * 2]
+$ echo $var2
+12
+$ cat test7
+#!/bin/bash
+var1=100
+var2=50
+var3=45
+var4=$[$var1 * ($var2 - $var3)]
+echo The final result is $var4
+				    	</code>
+				    </pre>
+				</section>
+				<section>
+				    <strong>Exit status</strong>
+				    <p style="font-size:20px">Every command that runs in the shell uses an exit status to indicate to the shell that it’s done processing. The exit status is an integer value between 0 and 255 that’s passed by the command to the shell when the command finishes running. Linux provides the <mark>$?</mark> special variable that holds the exit status value from the last command that executed</p>
+				    <pre style="font-size:20px">
+				    	<code>
+$ date
+Sat Sep 29 10:01:30 EDT 2007
+$ echo $?
+0
+$
+$ asdfg
+-bash: asdfg: command not found
+$ echo $?
+127
+$
+$ cat test13
+#!/bin/bash
+# testing the exit status
+var1=10
+var2=30
+var3=$[ $var1 + $var2 ]
+echo The answer is $var3
+exit 5
+$
+$ chmod u+x test13
+$ ./test13
+The answer is 40
+$ echo $?
+5
+				    	</code>
+				    </pre>
+				</section>
+				<section>
+				    <strong>if-then-else statement</strong>
+				    <pre><code>
+if command
+then
+commands
+else
+commands
+fi
+				    </code></pre>
+				    <p style="font-size:20px">If the command in the if statement line returns with an exit status code of zero, the commands listed in the then section are executed, just as in a normal if-then statement. If the command in the if statement line returns a non-zero exit status code, the bash shell executes the commands in the else section.</p>
+				    <strong>Nesting ifs</strong>
+				    <pre><code>
+if command1
+then
+commands
+elif command2
+then
+more commands
+fi
+				    </code></pre>
+				</section>
+				<section>
+				    <strong>Numeric Comparisons</strong>
+				    <pre style="font-size:10px"><code>
+n1 -eq n2	 Check if n1 is equal to n2.
+n1 -ge n2	 Check if n1 is greater than or equal to n2.
+n1 -gt n2 	 Check if n1 is greater than n2.
+n1 -le n2	 Check if n1 is less than or equal to n2.
+n1 -lt n2	 Check if n1 is less than n2.
+n1 -ne n2	 Check if n1 is not equal to n2.
+				    </code></pre>
+				    <strong>String Comparisons</strong>
+				    <pre style="font-size:10px"><code>
+str1 = str2 	     Check if str1 is the same as string str2.
+str1 != str2 	     Check if str1 is not the same as str2.
+str1 < str2 	     Check if str1 is less than str2.
+str1 > str2 	     Check if str1 is greater than str2.
+-n str1 	     Check if str1 has a length greater than zero.
+-z str1 	     Check if str1 has a length of zero.
+				    </code></pre>
+				    <strong>File Comparisons</strong>
+				    <pre style="font-size:10px"><code>
+-d file 	Check if file exists and is a directory.
+-e file 	Checks if file exists.
+-f file 	Checks if file exists and is a file.
+-r file 	Checks if file exists and is readable.
+-s file 	Checks if file exists and is not empty.
+-w file 	Checks if file exists and is writable.
+-x file 	Checks if file exists and is executable.
+-O file 	Checks if file exists and is owned by the current user.
+-G file	Checks if file exists and the default group is the same as the currentuser.
+file1 -nt file2 	Checks if file1 is newer than file2.
+file1 -ot file2 	Checks if file1 is older than file2.
+				    </code></pre>
+				</section>
+				<section>
+				    <strong>For loop</strong>
+				    <pre><code>
+for var in list
+do
+commands
+done
+				    </code></pre>
+				    <pre><code>
+$ cat test1
+#!/bin/bash
+# basic for command
+for test in Alabama Alaska Arizona Arkansas California Colorado
+do
+echo The next state is $test
+done
+$ ./test1
+The next state is Alabama
+The next state is Alaska
+The next state is Arizona
+The next state is Arkansas
+The next state is California
+The next state is Colorado
+				    </code></pre>
+				</section>
+				<section>
+				    <strong>C-style for loop</strong>
+				    <pre><code>
+for (( variable assignment ; condition ; iteration process ))
+
+for (( a = 1; a ‹ 10; a++ ))
+				    </code></pre>
+				    <strong>while Command</strong>
+				    <pre><code>
+while test command
+do
+other commands
+done
+				    </code></pre>
+				    <strong>until Command</strong>
+				    <pre><code>
+until test commands
+do
+other commands
+done
+				    </code></pre>
+				</section>
+				<section>
+				    <strong>Looping on File Data</strong>
+				    <p style="font-size:20px">By using for loop, each lines can be obtained for further processing</p>
+				    <pre><code>
+#!/bin/bash
+for entry in `cat /etc/passwd`
+do
+        echo "Values in $entry -"
+        for value in $entry
+        do
+                echo " $value"
+        done
+done
+				    </code></pre>
+				</section>
+				<section>
+				    <strong>Reading parameters</strong>
+				    <p style="font-size:20px">The bash shell assigns special variables, called positional parameters, to all of the parameters entered in a command line. This even includes the name of the program the shell executes. The positional parameter variables are standard numbers, with $0 being the name of the program, $1 being the first parameter, $2 being the second parameter, and so on, up to $9 for the ninth parameter</p>
+				    <pre><code>
+$ cat test1
+#!/bin/bash
+# using one command line parameter
+factorial=1
+for (( number = 1; number ‹= $1 ; number++ ))
+do
+factorial=$[ $factorial * $number ]
+done
+echo The factorial of $1 is $factorial
+
+$ ./test1 5
+The factorial of 5 is 120
+				    </code></pre>
+				</section>
+				<section>
+				    <strong>Basic reading</strong>
+				    <p style="font-size:20px">The read command accepts input from the standard input (the keyboard), or from another file
+descriptor. After receiving the input, the read command places the data into a standard variable. Here’s the read command at its simplest:</p>
+				    <pre><code>
+$ cat test21
+#!/bin/bash
+# testing the read command
+echo -n "Enter your name: "
+read name
+echo "Hello $name, welcome to my program.“
+
+$ ./test21
+Enter your name: Test
+Hello Test, welcome to my program.
+
+
+$ cat test27
+#!/bin/bash
+# hiding input data from the screen
+read -s -p "Enter your password: " pass
+echo
+echo "Is your password really $pass?“
+
+$ ./test27
+Enter your password:
+Is your password really T3st1ng?
+				    </code></pre>
+				</section>
+				<section>
+				    <strong>sed editor</strong>
+				    <p style="font-size:20px">It reads one line of data at a time from the input, matches that data with the supplied editor commands, changes data in the stream as specified in the commands, then outputs the new data to STDOUT. After the stream editor matches all of the commands against a line of data, it reads the next line of data and repeats the process. After the stream editor processes all of the lines of data in the stream, it terminates.</p>
+					    <pre><code>
+$ echo "This is a test" | sed ’s/test/big test/’
+This is a big test
+				    </code></pre>
+				    <p style="font-size:20px">Let's try an example</p>
+				    <pre><code>
+$ cat data1
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+$ sed ’s/dog/cat/’ data1
+The quick brown fox jumps over the lazy cat.
+The quick brown fox jumps over the lazy cat.
+The quick brown fox jumps over the lazy cat.
+$
+				    </code></pre>
+				</section>
+				<section>
+				    <strong>gawk program</strong>
+				    <p style="font-size:20px">gawk is a more advanced tool for manipulating data in a file. Within this programming language you can:
+				    </p>
+					<ul style="font-size:16px">
+					    <li> Define variables to store data.</li>
+					    <li> Use arithmetic and string operators to operate on data.</li>
+					    <li> Use structured programming concepts, such as if-then statements and loops, to add
+logic to your data processing.</li>
+					    <li> Generate formatted reports by extracting data elements within the data file and repositioning
+them in another order or format.</li>
+				    </ul> 
+				    <pre><code>
+$echo "This is windows" | gawk '{$3="Linux"; print $0}' 
+This is Linux
+				    </code></pre>
+				</section>
+				<section>Thank you !!!</section>
 			</div>
 		</div>
 
